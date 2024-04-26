@@ -67,6 +67,9 @@ EDITOR="vim"
 # Fetch the current branch name
 BRANCH_NAME=\$(git rev-parse --abbrev-ref HEAD)
 
+# Fetch the default branch name
+DEFAULT_BRANCH_NAME=\$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+
 # Ensure the directory exists
 mkdir -p "${notes_dir}"
 
@@ -86,7 +89,7 @@ fetch_commits() {
     echo "" >> "\${FILE_PATH}"
 
     # Collect commit hashes and messages from commits not yet pushed
-    local new_commits=\$(git rev-list HEAD ^\$2/master)
+    local new_commits=\$(git rev-list HEAD ^\${DEFAULT_BRANCH_NAME})
     if [ -z "\$new_commits" ]; then
         echo "No new commits to push." >> "\${FILE_PATH}"
         return
@@ -95,7 +98,7 @@ fetch_commits() {
         echo "## Commit \$commit" >> "\${FILE_PATH}"
         echo "\`\`\`" >> "\${FILE_PATH}"
         git log --format=%B -n 1 \$commit >> "\${FILE_PATH}"
-        echo "\`\`\`" >> "\${FILE_PATH}"
+        echo "\`\`\`" >> "\${FILE_PATH"
         echo "" >> "\${FILE_PATH}"
     done
 }
