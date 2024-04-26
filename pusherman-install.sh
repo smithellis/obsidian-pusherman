@@ -1,7 +1,10 @@
 #!/bin/bash
 
-echo "Enter the full path to your Git repository:"
+# Default to the current directory as the Git repository path
+default_repo_path=$(pwd)
+echo "Enter the full path to your Git repository (default: $default_repo_path):"
 read repo_path
+repo_path=${repo_path:-$default_repo_path}
 
 # Verify if the specified path is a git repository
 if [ ! -d "$repo_path/.git" ]; then
@@ -9,11 +12,19 @@ if [ ! -d "$repo_path/.git" ]; then
     exit 1
 fi
 
-echo "Enter the full path to the directory where you want to store the notes:"
+# Get path for storing notes
+echo "Enter the full path to the directory where you want to store the notes (default: $default_repo_path/notes):"
 read notes_dir
+notes_dir=${notes_dir:-"$default_repo_path/notes"}
 
-# Ensure the notes directory exists
-mkdir -p "$notes_dir"
+# Check and create notes directory if it doesn't exist
+if [ ! -d "$notes_dir" ]; then
+    mkdir -p "$notes_dir"
+    if [ $? -ne 0 ]; then
+        echo "Failed to create directory at $notes_dir"
+        exit 1
+    fi
+fi
 
 # Path to the pre-push script
 hook_path="$repo_path/.git/hooks/pre-push"
