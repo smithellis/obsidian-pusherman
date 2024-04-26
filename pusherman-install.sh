@@ -109,7 +109,7 @@ fi
 
 # Check if there are new commits to edit, open the file in the editor
 if [ -s "\${FILE_PATH}" ]; then
-    "\$EDITOR" "\${FILE_PATH}"
+    vim "\${FILE_PATH}" </dev/tty
 else
     echo "No new commits to push. Exiting."
     exit 1
